@@ -7,16 +7,18 @@ import {
   CircleStackIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { useSelector } from 'react-redux';
-import { selectCurrentDbId, selectDatabases } from '@/app/store/kwil-slice';
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import {
+  selectActiveDbId,
+  selectDatabases,
+  setActiveDbId,
+} from '@/store/kwil-slice';
+import classNames from 'classnames';
 
 export default function Sidebar() {
-  const databases = useSelector(selectDatabases);
-  const currentDbId = useSelector(selectCurrentDbId);
+  const databases = useAppSelector(selectDatabases);
+  const activeDbId = useAppSelector(selectActiveDbId);
+  const dispatch = useAppDispatch();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -78,40 +80,38 @@ export default function Sidebar() {
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
                   <div className="flex h-16 shrink-0 items-center"></div>
                   <nav className="flex flex-1 flex-col">
-                    <div className="text-md leading-6 text-gray-400">
-                      Databases
+                    <div className="flex text-md leading-6 text-gray-400">
+                      <CircleStackIcon className="h-6 w-6 mr-2" /> Databases
                     </div>
                     <ul role="list" className="flex flex-1 flex-col gap-y-7">
-                      {databases.length === 0 && (
+                      {databases && databases.length === 0 && (
                         <li className="text-xs text-gray-400">
                           No databases have been created
                         </li>
                       )}
                       <li>
-                        <ul role="list" className="-mx-2 space-y-1">
-                          {databases.map((item) => (
-                            <li key={item.name}>
-                              <a
-                                className={classNames(
-                                  item.id === currentDbId
-                                    ? 'bg-gray-50 text-indigo-600'
-                                    : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
-                                  'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                                )}
-                              >
-                                <CircleStackIcon
-                                  className={classNames(
-                                    item.id === currentDbId
-                                      ? 'text-indigo-600'
-                                      : 'text-gray-400 group-hover:text-indigo-600',
-                                    'h-6 w-6 shrink-0'
-                                  )}
-                                  aria-hidden="true"
-                                />
-                                {item.name}
-                              </a>
-                            </li>
-                          ))}
+                        <ul role="list" className="mt-2">
+                          {databases &&
+                            databases.map((item) => (
+                              <li key={item.name}>
+                                <a
+                                  onClick={() => {
+                                    dispatch(setActiveDbId(item.id));
+                                    setSidebarOpen(false);
+                                  }}
+                                  className={classNames({
+                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 pl-8 cursor-pointer':
+                                      true,
+                                    'bg-gray-50 text-indigo-600':
+                                      item.id === activeDbId,
+                                    'text-gray-700 hover:text-indigo-600 hover:bg-gray-50':
+                                      item.id !== activeDbId,
+                                  })}
+                                >
+                                  {item.name}
+                                </a>
+                              </li>
+                            ))}
                         </ul>
                       </li>
                     </ul>

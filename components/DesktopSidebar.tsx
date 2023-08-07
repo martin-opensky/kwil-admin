@@ -1,17 +1,19 @@
 'use client';
 
-import { selectCurrentDbId, selectDatabases } from '@/app/store/kwil-slice';
+import {
+  selectActiveDbId,
+  selectDatabases,
+  setActiveDbId,
+} from '@/store/kwil-slice';
 import { CircleStackIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { useSelector } from 'react-redux';
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import classNames from 'classnames';
 
 export default function DesktopSidebar() {
-  const databases = useSelector(selectDatabases);
-  const currentDbId = useSelector(selectCurrentDbId);
+  const databases = useAppSelector(selectDatabases);
+  const activeDbId = useAppSelector(selectActiveDbId);
+  const dispatch = useAppDispatch();
 
   return (
     <>
@@ -21,38 +23,38 @@ export default function DesktopSidebar() {
         <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
           <div className="flex h-16 shrink-0 items-center"></div>
           <nav className="flex flex-1 flex-col">
-            <div className="text-md leading-6 text-gray-500">Databases</div>
+            <div className="flex text-md leading-6 text-gray-500">
+              <CircleStackIcon className="h-6 w-6 mr-2" />
+              Databases
+            </div>
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
-              {databases.length === 0 && (
+              {databases && databases.length === 0 && (
                 <li className="text-xs text-gray-400">
                   No databases have been created
                 </li>
               )}
               <li>
-                <ul role="list" className="-mx-2 space-y-1">
-                  {databases.map((item) => (
-                    <li key={item.id}>
-                      <a
-                        className={classNames(
-                          item.id === currentDbId
-                            ? 'bg-gray-50 text-indigo-600'
-                            : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
-                          'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                        )}
-                      >
-                        <CircleStackIcon
-                          className={classNames(
-                            item.id === currentDbId
-                              ? 'text-indigo-600'
-                              : 'text-gray-400 group-hover:text-indigo-600',
-                            'h-6 w-6 shrink-0'
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
+                <ul role="list" className="mt-2">
+                  {databases &&
+                    databases.map((item) => (
+                      <li key={item.id}>
+                        <a
+                          onClick={() => {
+                            dispatch(setActiveDbId(item.id));
+                          }}
+                          className={classNames({
+                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 pl-8 cursor-pointer':
+                              true,
+                            'bg-gray-50 text-indigo-600':
+                              item.id === activeDbId,
+                            'text-gray-700 hover:text-indigo-600 hover:bg-gray-50':
+                              item.id !== activeDbId,
+                          })}
+                        >
+                          {item.name}
+                        </a>
+                      </li>
+                    ))}
                 </ul>
               </li>
             </ul>
