@@ -20,6 +20,7 @@
     "classnames": "^2.3.2",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
+    "ethers": "^6.7.0",
     "kwil": "^3.2.3",
     "next": "13.4.12",
     "node-fetch": "^3.3.2",
@@ -27,6 +28,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-redux": "^8.1.2",
+    "react-spinners": "^0.13.8",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6"
   }

@@ -49,6 +49,12 @@ export default function Table() {
     };
   }, [activeDbId, activeTable, dispatch]);
 
+  if (!schema || !activeTable) return null;
+
+  if (tableData && !tableData.length) {
+    return <div className="mt-4 text-red-400">No table data</div>;
+  }
+
   return (
     <div className="px-4 sm:px-4 lg:px-8">
       <div className="mt-8 flow-root">

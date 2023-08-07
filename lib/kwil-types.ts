@@ -9,6 +9,14 @@ export type KwilAdminSchema = {
   actions: ActionSchema[];
 };
 
+export type ProviderResponse = {
+  alias: string;
+  shortAddress: string;
+  address: string;
+  url: string;
+};
+
+// NOTE: This is a copy of the Kwil Schema types with the readonly properties removed
 export type ValueType = string | number | null;
 export declare enum DataType {
   NULL = 'NULL',

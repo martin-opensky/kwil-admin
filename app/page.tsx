@@ -8,13 +8,32 @@ import {
   setActiveDbSchema,
   setActiveTable,
   setDatabases,
+  setProvider,
 } from '@/store/kwil-slice';
-import { KwilAdminDatabase, KwilAdminSchema } from '@/lib/kwil-mutable-types';
+import {
+  KwilAdminDatabase,
+  KwilAdminSchema,
+  ProviderResponse,
+} from '@/lib/kwil-types';
 import ActiveDatabase from '@/components/ActiveDatabase';
 
 export default function Page() {
   const dispatch = useAppDispatch();
   const activeDbId = useAppSelector(selectActiveDbId);
+
+  useEffect(() => {
+    async function fetchProvider() {
+      const response = await fetch('/api/provider');
+
+      if (response.ok) {
+        const data: ProviderResponse = await response.json();
+
+        dispatch(setProvider(data));
+      }
+    }
+
+    fetchProvider();
+  }, [dispatch]);
 
   useEffect(() => {
     async function fetchDatabases() {

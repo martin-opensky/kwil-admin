@@ -1,6 +1,7 @@
-import {  NextApiResponse } from 'next';
+import { NextApiResponse } from 'next';
 import fetch from 'node-fetch';
 import { Utils } from 'kwil';
+import { Wallet } from 'ethers';
 
 type DatabaseResponse = {
   databases: string[];
@@ -11,13 +12,20 @@ type KwilDatabase = {
   name: string;
 };
 
+if (!process.env.ADMIN_PRIVATE_KEY)
+  throw new Error('ADMIN_PRIVATE_KEY not set');
+if (!process.env.KWIL_PROVIDER_URL)
+  throw new Error('KWIL_PROVIDER_URL not set');
+
 // Next js api route
-export default async function handler(
-  req: Request,
-  res: NextApiResponse
-) {
+export default async function handler(req: Request, res: NextApiResponse) {
+  const kwilProviderUrl = process.env.KWIL_PROVIDER_URL as string;
+  const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY as string;
+  const signer = new Wallet(adminPrivateKey);
+  const providerAddress = await signer.getAddress();
+
   const call = await fetch(
-    'http://localhost:8080/api/v1/0x1BAB009913b7Ec9a4fd33c79ea918F03C562B877/databases'
+    `${kwilProviderUrl}api/v1/${providerAddress}/databases`
   );
 
   if (!call.ok) return res.status(500).json({ error: 'Something went wrong' });

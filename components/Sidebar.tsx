@@ -11,11 +11,14 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   selectActiveDbId,
   selectDatabases,
+  selectProvider,
   setActiveDbId,
 } from '@/store/kwil-slice';
 import classNames from 'classnames';
+import Image from 'next/image';
 
 export default function Sidebar() {
+  const provider = useAppSelector(selectProvider);
   const databases = useAppSelector(selectDatabases);
   const activeDbId = useAppSelector(selectActiveDbId);
   const dispatch = useAppDispatch();
@@ -77,12 +80,26 @@ export default function Sidebar() {
                   </div>
                 </Transition.Child>
                 {/* Sidebar component, swap this element with another sidebar if you like */}
-                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
-                  <div className="flex h-16 shrink-0 items-center"></div>
+                <div className="flex grow flex-col gap-6 overflow-y-auto bg-white px-6 pb-2">
+                  <div className="flex flex-col shrink-0 items-center mt-4">
+                    <Image
+                      src="/kwil-admin.png"
+                      alt="Kwil Logo"
+                      width={150}
+                      height={150}
+                    />
+                  </div>
+                  <ul className="flex flex-col gap-2 text-sm text-center leading-6 text-gray-500">
+                    <li className="font-semibold">{provider?.alias}</li>
+                    <li>{provider?.url}</li>
+                    <li>{provider?.shortAddress}</li>
+                  </ul>
                   <nav className="flex flex-1 flex-col">
-                    <div className="flex text-md leading-6 text-gray-400">
-                      <CircleStackIcon className="h-6 w-6 mr-2" /> Databases
-                    </div>
+                    {databases && (
+                      <div className="flex text-md justify-center leading-6 text-gray-400">
+                        <CircleStackIcon className="h-6 w-6 mr-2" /> Databases
+                      </div>
+                    )}
                     <ul role="list" className="flex flex-1 flex-col gap-y-7">
                       {databases && databases.length === 0 && (
                         <li className="text-xs text-gray-400">
@@ -90,7 +107,7 @@ export default function Sidebar() {
                         </li>
                       )}
                       <li>
-                        <ul role="list" className="mt-2">
+                        <ul role="list" className="mt-3">
                           {databases &&
                             databases.map((item) => (
                               <li key={item.name}>
@@ -100,7 +117,7 @@ export default function Sidebar() {
                                     setSidebarOpen(false);
                                   }}
                                   className={classNames({
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 pl-8 cursor-pointer':
+                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 cursor-pointer justify-center':
                                       true,
                                     'bg-gray-50 text-indigo-600':
                                       item.id === activeDbId,
@@ -133,7 +150,7 @@ export default function Sidebar() {
           <Bars3Icon className="h-6 w-6" aria-hidden="true" />
         </button>
         <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">
-          Dashboard
+          Dashboard - {provider?.alias}
         </div>
         <a href="#">
           <span className="sr-only">Your profile</span>
