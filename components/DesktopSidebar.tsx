@@ -4,6 +4,7 @@ import {
   selectActiveDbId,
   selectDatabases,
   selectProvider,
+  selectProviderError,
   setActiveDbId,
 } from '@/store/kwil-slice';
 import { CircleStackIcon } from '@heroicons/react/24/outline';
@@ -11,10 +12,11 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import classNames from 'classnames';
 import Image from 'next/image';
-import { BeatLoader, RingLoader } from 'react-spinners';
+import { BeatLoader } from 'react-spinners';
 
 export default function DesktopSidebar() {
   const provider = useAppSelector(selectProvider);
+  const providerError = useAppSelector(selectProviderError);
   const databases = useAppSelector(selectDatabases);
   const activeDbId = useAppSelector(selectActiveDbId);
   const dispatch = useAppDispatch();
@@ -33,19 +35,26 @@ export default function DesktopSidebar() {
               height={150}
             />
             <div className="flex flex-col text-center">
-              <BeatLoader loading={!provider || !databases} size={8} />
+              <BeatLoader loading={!databases && !providerError} size={8} />
             </div>
           </div>
 
-          {provider && databases && (
+          {provider && (
             <ul className="flex flex-col gap-2 text-sm text-center leading-6 text-gray-500">
               <li className="font-semibold">{provider?.alias}</li>
               <li>{provider?.url}</li>
               <li>{provider?.shortAddress}</li>
             </ul>
           )}
+
+          {providerError && (
+            <ul className="text-xs text-red-400 text-center">
+              Could not connect to provider
+            </ul>
+          )}
+
           <nav className="flex flex-1 flex-col mt-4">
-            {provider && databases && (
+            {!providerError && provider && databases && (
               <div className="flex text-md justify-center leading-6 text-gray-500">
                 <CircleStackIcon className="h-6 w-6 mr-2" />
                 Databases
@@ -53,14 +62,15 @@ export default function DesktopSidebar() {
             )}
 
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
-              {databases && databases.length === 0 && (
-                <li className="text-xs text-gray-400">
+              {!providerError && databases && databases.length === 0 && (
+                <li className="text-xs text-gray-400 text-center mt-4">
                   No databases have been created
                 </li>
               )}
               <li>
                 <ul role="list" className="mt-3">
-                  {databases &&
+                  {!providerError &&
+                    databases &&
                     databases.map((item) => (
                       <li key={item.id}>
                         <a

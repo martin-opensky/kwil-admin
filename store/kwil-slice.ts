@@ -9,6 +9,7 @@ import {
 } from '../lib/kwil-types';
 export interface KwilState {
   provider: ProviderResponse | null;
+  providerError: boolean;
   databases: KwilAdminDatabase[] | null;
   activeDbId: string | null;
   activeDbSchema: KwilAdminSchema | null;
@@ -18,6 +19,7 @@ export interface KwilState {
 
 const initialState: KwilState = {
   provider: null,
+  providerError: false,
   databases: null,
   activeDbId: null,
   activeDbSchema: null,
@@ -31,6 +33,9 @@ export const kwilSlice = createSlice({
   reducers: {
     setProvider: (state, action: PayloadAction<ProviderResponse>) => {
       state.provider = action.payload;
+    },
+    setProviderError: (state, action: PayloadAction<boolean>) => {
+      state.providerError = action.payload;
     },
     setDatabases: (state, action: PayloadAction<KwilAdminDatabase[]>) => {
       state.databases = action.payload;
@@ -60,6 +65,7 @@ export const kwilSlice = createSlice({
 
 export const {
   setProvider,
+  setProviderError,
   setDatabases,
   setActiveDbId,
   setActiveDbSchema,
@@ -68,6 +74,8 @@ export const {
 } = kwilSlice.actions;
 
 export const selectProvider = (state: RootState) => state.kwil.provider;
+export const selectProviderError = (state: RootState) =>
+  state.kwil.providerError;
 export const selectDatabases = (state: RootState) => state.kwil.databases;
 export const selectActiveDbId = (state: RootState) => state.kwil.activeDbId;
 export const selectActiveDbSchema = (state: RootState) =>

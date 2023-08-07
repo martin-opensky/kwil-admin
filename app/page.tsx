@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
   selectActiveDbId,
@@ -9,6 +9,7 @@ import {
   setActiveTable,
   setDatabases,
   setProvider,
+  setProviderError,
 } from '@/store/kwil-slice';
 import {
   KwilAdminDatabase,
@@ -20,6 +21,7 @@ import ActiveDatabase from '@/components/ActiveDatabase';
 export default function Page() {
   const dispatch = useAppDispatch();
   const activeDbId = useAppSelector(selectActiveDbId);
+  const dbInterval = useRef<any>(null);
 
   useEffect(() => {
     async function fetchProvider() {
@@ -44,14 +46,26 @@ export default function Page() {
         const databases: KwilAdminDatabase[] = data.databases;
 
         dispatch(setDatabases(databases));
+        dispatch(setProviderError(false));
 
         if (databases.length > 0) {
           dispatch(setActiveDbId(databases[0].id));
         }
+      } else {
+        console.log('error fetching databases');
+        dispatch(setProviderError(true));
       }
     }
 
     fetchDatabases();
+
+    dbInterval.current = setInterval(() => {
+      fetchDatabases();
+    }, 5000);
+
+    return () => {
+      clearInterval(dbInterval.current);
+    };
   }, [dispatch]);
 
   useEffect(() => {
