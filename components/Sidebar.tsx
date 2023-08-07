@@ -119,9 +119,9 @@ export default function Sidebar() {
                                   className={classNames({
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 cursor-pointer justify-center':
                                       true,
-                                    'bg-gray-50 text-indigo-600':
+                                    'bg-gray-50 text-kwil':
                                       item.id === activeDbId,
-                                    'text-gray-700 hover:text-indigo-600 hover:bg-gray-50':
+                                    'text-gray-700 hover:text-kwil hover:bg-gray-50':
                                       item.id !== activeDbId,
                                   })}
                                 >

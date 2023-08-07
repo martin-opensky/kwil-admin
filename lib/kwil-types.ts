@@ -45,7 +45,7 @@ export interface Database<T> {
 }
 export interface Table<T> {
   get name(): string;
-  get columns(): Column<T>[]; // TODO: Had to convert this to array to get it to work
+  get columns(): Column<T>[]; // NOTE: Had to convert this to array to get it to work
   get indexes(): Index;
 }
 export interface Column<T> {
@@ -65,8 +65,8 @@ export interface Index {
 export interface ActionSchema {
   get name(): string;
   get public(): boolean;
-  get inputs(): string;
-  get statements(): string;
+  get inputs(): string[]; // NOTE: Had to convert this to array to get it to work
+  get statements(): string[]; // NOTE: Had to convert this to array to get it to work
 }
 export interface SelectQuery {
   get dbid(): string;

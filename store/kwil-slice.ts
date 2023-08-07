@@ -15,6 +15,7 @@ export interface KwilState {
   activeDbSchema: KwilAdminSchema | null;
   activeTable: string | null;
   tableData: Record<string, any>;
+  activeAction: string | null;
 }
 
 const initialState: KwilState = {
@@ -25,6 +26,7 @@ const initialState: KwilState = {
   activeDbSchema: null,
   activeTable: null,
   tableData: {},
+  activeAction: null,
 };
 
 export const kwilSlice = createSlice({
@@ -43,9 +45,10 @@ export const kwilSlice = createSlice({
     setActiveDbId: (state, action: PayloadAction<string>) => {
       if (state.activeDbId === action.payload) return;
 
-      state.activeDbId = action.payload;
       state.activeTable = null; // clear active table when switching databases
       state.tableData = {}; // clear table data when switching databases
+      state.activeAction = null;
+      state.activeDbId = action.payload;
     },
     setActiveDbSchema: (state, action: PayloadAction<KwilAdminSchema>) => {
       state.activeDbSchema = action.payload;
@@ -60,6 +63,9 @@ export const kwilSlice = createSlice({
 
       state.tableData[name] = action.payload;
     },
+    setActiveAction: (state, action: PayloadAction<string | null>) => {
+      state.activeAction = action.payload;
+    },
   },
 });
 
@@ -71,16 +77,20 @@ export const {
   setActiveDbSchema,
   setActiveTable,
   setTableData,
+  setActiveAction,
 } = kwilSlice.actions;
 
 export const selectProvider = (state: RootState) => state.kwil.provider;
 export const selectProviderError = (state: RootState) =>
   state.kwil.providerError;
+
 export const selectDatabases = (state: RootState) => state.kwil.databases;
 export const selectActiveDbId = (state: RootState) => state.kwil.activeDbId;
 export const selectActiveDbSchema = (state: RootState) =>
   state.kwil.activeDbSchema;
+
 export const selectActiveTable = (state: RootState) => state.kwil.activeTable;
+
 export const selectActiveTableColumns = (state: RootState) => {
   const table = state.kwil.activeDbSchema?.tables.find(
     (table) => table.name === state.kwil.activeTable
@@ -88,10 +98,19 @@ export const selectActiveTableColumns = (state: RootState) => {
 
   return table?.columns;
 };
+
 export const selectTableData = (state: RootState) => {
   if (!state.kwil.activeTable) return null;
 
   return state.kwil.tableData[state.kwil.activeTable];
+};
+
+export const selectActiveAction = (state: RootState) => {
+  const action = state.kwil.activeDbSchema?.actions.find(
+    (action) => action.name === state.kwil.activeAction
+  );
+
+  return action;
 };
 
 export default kwilSlice.reducer;
