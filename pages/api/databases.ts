@@ -25,7 +25,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
   const providerAddress = await signer.getAddress();
 
   const call = await fetch(
-    `${kwilProviderUrl}api/v1/${providerAddress}/databases`
+    `${kwilProviderUrl}/api/v1/${providerAddress}/databases`
   );
 
   if (!call.ok) return res.status(500).json({ error: 'Something went wrong' });
