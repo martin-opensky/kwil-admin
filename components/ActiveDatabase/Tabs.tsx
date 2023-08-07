@@ -32,7 +32,9 @@ export default function Tabs() {
         >
           {tables &&
             tables.map((table) => (
-              <option key={table.name}>{table.name}</option>
+              <option key={table.name} selected={table.name === activeTable}>
+                {table.name}
+              </option>
             ))}
         </select>
       </div>
