@@ -10,8 +10,6 @@ export default function Actions() {
 
   const actions = schema?.actions;
 
-  console.log('Actions', actions);
-
   return (
     <>
       <div className="flex flex-wrap gap-4 ml-4 justify-center">

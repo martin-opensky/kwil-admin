@@ -42,7 +42,7 @@ export const kwilSlice = createSlice({
     setDatabases: (state, action: PayloadAction<KwilAdminDatabase[]>) => {
       state.databases = action.payload;
     },
-    setActiveDbId: (state, action: PayloadAction<string>) => {
+    setActiveDbId: (state, action: PayloadAction<string | null>) => {
       if (state.activeDbId === action.payload) return;
 
       state.activeTable = null; // clear active table when switching databases
@@ -111,6 +111,14 @@ export const selectActiveAction = (state: RootState) => {
   );
 
   return action;
+};
+
+export const selectDbName = (state: RootState) => {
+  const db = state.kwil.databases?.find(
+    (db) => db.id === state.kwil.activeDbId
+  );
+
+  return db?.name;
 };
 
 export default kwilSlice.reducer;

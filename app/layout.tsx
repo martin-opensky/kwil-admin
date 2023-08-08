@@ -27,9 +27,7 @@ export default function RootLayout({
           <Sidebar />
           <DesktopSidebar />
 
-          <main className="py-6 lg:pl-72">
-            <div className="px-4 sm:px-6 lg:px-8">{children}</div>
-          </main>
+          <main className="lg:pl-72">{children}</main>
         </ReduxProvider>
       </body>
     </html>

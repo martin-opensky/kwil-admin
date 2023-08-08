@@ -7,12 +7,19 @@ import {
   selectProviderError,
   setActiveDbId,
 } from '@/store/kwil-slice';
-import { CircleStackIcon } from '@heroicons/react/24/outline';
+import {
+  CircleStackIcon,
+  PlusCircleIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import classNames from 'classnames';
 import Image from 'next/image';
 import { BeatLoader } from 'react-spinners';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import path from 'path';
 
 export default function DesktopSidebar() {
   const provider = useAppSelector(selectProvider);
@@ -20,6 +27,7 @@ export default function DesktopSidebar() {
   const databases = useAppSelector(selectDatabases);
   const activeDbId = useAppSelector(selectActiveDbId);
   const dispatch = useAppDispatch();
+  const pathname = usePathname();
 
   return (
     <>
@@ -68,28 +76,47 @@ export default function DesktopSidebar() {
                 </li>
               )}
               <li>
-                <ul role="list" className="mt-3">
-                  {!providerError &&
-                    databases &&
-                    databases.map((item) => (
+                {!providerError && databases && (
+                  <ul role="list" className="mt-3">
+                    {databases.map((item) => (
                       <li key={item.id}>
-                        <a
+                        <Link
+                          href={`/database/${item.id}`}
                           onClick={() => {
                             dispatch(setActiveDbId(item.id));
                           }}
                           className={classNames({
                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 cursor-pointer justify-center':
                               true,
-                            'bg-gray-50 text-kwil': item.id === activeDbId,
+                            'bg-gray-50 text-kwil':
+                              item.id === activeDbId && pathname !== '/create',
                             'text-gray-700 hover:text-kwil hover:bg-gray-50':
                               item.id !== activeDbId,
                           })}
                         >
                           {item.name}
-                        </a>
+                        </Link>
                       </li>
                     ))}
-                </ul>
+                    {/* <li>
+                      <Link
+                        href={`/create`}
+                        onClick={() => {
+                          dispatch(setActiveDbId(null));
+                        }}
+                        className={classNames({
+                          'group flex rounded-md p-2 text-sm leading-6 cursor-pointer justify-center':
+                            true,
+                          'bg-gray-50 text-kwil': pathname === '/create',
+                          'text-gray-700 hover:text-kwil hover:bg-gray-50':
+                            pathname !== '/create',
+                        })}
+                      >
+                        create <PlusCircleIcon className="ml-1 h-6 w-6" />
+                      </Link>
+                    </li> */}
+                  </ul>
+                )}
               </li>
             </ul>
           </nav>
