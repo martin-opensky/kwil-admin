@@ -18,7 +18,7 @@ export default class KwilSchema {
 
   constructor(dbId: string) {
     this.kwil = new NodeKwil({
-      kwilProvider: process.env.KWIL_ADMIN_PROVIDER_URL as string,
+      kwilProvider: process.env.KWIL_PROVIDER_URL as string,
     });
 
     this.dbId = dbId;

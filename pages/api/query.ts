@@ -13,7 +13,7 @@ export default async function handler(
 
     try {
       const kwil: NodeKwil = new NodeKwil({
-        kwilProvider: process.env.KWIL_ADMIN_PROVIDER_URL as string,
+        kwilProvider: process.env.KWIL_PROVIDER_URL as string,
       });
       const result = await kwil.selectQuery(dbId, query);
 

@@ -4,14 +4,14 @@ import { ProviderResponse } from '@/lib/kwil-types';
 
 if (!process.env.ADMIN_PRIVATE_KEY)
   throw new Error('ADMIN_PRIVATE_KEY not set');
-if (!process.env.KWIL_ADMIN_PROVIDER_URL)
-  throw new Error('KWIL_ADMIN_PROVIDER_URL not set');
+if (!process.env.KWIL_PROVIDER_URL)
+  throw new Error('KWIL_PROVIDER_URL not set');
 if (!process.env.KWIL_ADMIN_PROVIDER_ALIAS)
   throw new Error('KWIL_ADMIN_PROVIDER_ALIAS not set');
 
 // Next js api route
 export default async function handler(req: Request, res: NextApiResponse) {
-  const url = process.env.KWIL_ADMIN_PROVIDER_URL as string;
+  const url = process.env.KWIL_PROVIDER_URL as string;
   const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY as string;
   const alias = process.env.KWIL_ADMIN_PROVIDER_ALIAS as string;
 
