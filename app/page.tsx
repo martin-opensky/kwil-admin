@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
   selectActiveDbId,
@@ -21,7 +21,6 @@ import ActiveDatabase from '@/components/ActiveDatabase';
 export default function Page() {
   const dispatch = useAppDispatch();
   const activeDbId = useAppSelector(selectActiveDbId);
-  // const dbInterval = useRef<any>(null);
 
   useEffect(() => {
     async function fetchProvider() {
@@ -58,14 +57,6 @@ export default function Page() {
     }
 
     fetchDatabases();
-
-    // dbInterval.current = setInterval(() => {
-    //   fetchDatabases();
-    // }, 5000);
-
-    // return () => {
-    //   clearInterval(dbInterval.current);
-    // };
   }, [dispatch]);
 
   useEffect(() => {
@@ -88,5 +79,9 @@ export default function Page() {
     fetchDatabaseSchema();
   }, [dispatch, activeDbId]);
 
-  return <>{<ActiveDatabase />}</>;
+  return (
+    <>
+      <ActiveDatabase />
+    </>
+  );
 }

@@ -46,6 +46,17 @@ export default class KwilSchema {
     this.tables = this.schema.tables;
     this.actions = this.schema.actions;
 
+    // @ts-ignore
+    this.actions = this.actions.sort((a, b) => {
+      if (a.name < b.name) return -1;
+
+      if (a.name > b.name) return 1;
+
+      return 0;
+    });
+
+    console.log(this.actions);
+
     return {
       name: this.name,
       tables: this.tables,

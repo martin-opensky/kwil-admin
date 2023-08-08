@@ -14,7 +14,7 @@ export default function ActionModal() {
   const activeDbId = useAppSelector(selectActiveDbId);
   const [values, setValues] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<string | null>(null);
-  //   const [successBody, setSuccessBody] = useState<Record<string, string>>({});
+  const [successBody, setSuccessBody] = useState<Record<string, string>>({});
 
   const setValue = (key: string, value: string) => {
     setValues((prev: Record<string, string>) => ({ ...prev, [key]: value }));
@@ -23,6 +23,7 @@ export default function ActionModal() {
   const closeAction = () => {
     setStatus(null);
     setValues({});
+    setSuccessBody({});
     dispatch(setActiveAction(null));
   };
 
@@ -40,15 +41,14 @@ export default function ActionModal() {
     });
 
     if (response.ok) {
-      const data = await response.json();
+      const json = await response.json();
 
-      //   // TODO: Show result on UI
-      //   setSuccessBody(data.data.body);
+      // TODO: Show all results not just first row
+      setSuccessBody(json.data?.body?.[0]);
+
+      console.log('executeAction', json.data?.body?.[0]);
 
       setStatus('success');
-      setTimeout(() => {
-        closeAction();
-      }, 2000);
     } else {
       setStatus('error');
     }
@@ -71,7 +71,7 @@ export default function ActionModal() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-kwil/10 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-slate-200/30 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -104,6 +104,13 @@ export default function ActionModal() {
                   >
                     Action executed successfully
                   </div>
+
+                  {successBody && Object.keys(successBody).length > 0 && (
+                    <pre className="text-xs text-gray-600 mt-2">
+                      {JSON.stringify(successBody, null, 2)}
+                    </pre>
+                  )}
+
                   <div
                     className={classNames({
                       'flex-1 bg-red-200/80 p-2 rounded-md text-sm': true,
@@ -115,7 +122,7 @@ export default function ActionModal() {
                   <div className="flex flex-col gap-2 text-md text-gray-600">
                     {activeAction &&
                       activeAction.inputs &&
-                      activeAction.inputs.map((input) => (
+                      activeAction.inputs.map((input: string) => (
                         <>
                           <div className="isolate -space-y-px rounded-md shadow-sm z-50">
                             <div
@@ -151,15 +158,13 @@ export default function ActionModal() {
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-kwil/80 shadow-sm outline outline-1 outline-kwil/80 hover:bg-kwil/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kwil/80"
                       onClick={() => closeAction()}
-                      disabled={status === 'success'}
                     >
-                      Cancel
+                      Close
                     </button>
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-kwil/80 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-kwil focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kwil/80"
                       onClick={() => executeAction()}
-                      disabled={status === 'success'}
                     >
                       Execute
                     </button>
