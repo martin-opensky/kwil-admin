@@ -35,10 +35,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
   const databases: KwilDatabase[] = [];
   for (const database of json.databases) {
     // Need to connect to Kwil DB and bu
-    const dbId = Utils.generateDBID(
-      '0x1BAB009913b7Ec9a4fd33c79ea918F03C562B877',
-      database
-    );
+    const dbId = Utils.generateDBID(providerAddress, database);
 
     databases.push({ id: dbId, name: database });
   }
